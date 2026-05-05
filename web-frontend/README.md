@@ -1,6 +1,6 @@
 # Admin Web Panel
 
-React.js web admin panel for managing the Jewellery Mobile App backend. Built with Vite, React Router, and Axios.
+React.js web Brand Shoot Admin for managing the Jewellery Mobile App backend. Built with Vite, React Router, and Axios.
 
 ## Features
 

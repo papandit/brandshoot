@@ -37,7 +37,7 @@ const Login = () => {
           <div className="login-icon gradient-bg">
             <LogIn size={32} color="white" />
           </div>
-          <h1 className="login-title">Admin Panel</h1>
+          <h1 className="login-title">Brand Shoot Admin</h1>
           <p className="login-subtitle">Sign in to access the dashboard</p>
         </div>
 

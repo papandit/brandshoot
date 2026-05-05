@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  # Frontend Service (Admin Panel at /admin)
+  # Frontend Service (Brand Shoot Admin at /admin)
   frontend:
     container_name: flyr-frontend
     build:
@@ -27,7 +27,7 @@ services:
     build: ./backend
     restart: always
     ports:
-      - "8001:8000"
+      - "3000:8000"
     networks:
       - n8n_default
     env_file:

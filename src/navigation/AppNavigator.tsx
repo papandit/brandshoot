@@ -72,7 +72,7 @@ export default function AppNavigator() {
           <Stack.Screen name="Signup" component={SignupScreen} />
         </>
       ) : isAdmin ? (
-        // Admin Stack - Show admin panel when role is admin
+        // Admin Stack - Show Brand Shoot Admin when role is admin
         <>
           <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} />
           <Stack.Screen name="AdminUsers" component={AdminUsersScreen} />

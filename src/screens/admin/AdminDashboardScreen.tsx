@@ -115,7 +115,7 @@ export default function AdminDashboardScreen({ navigation }: any) {
 
     return (
         <View style={styles.container}>
-            <AppHeader title="Admin Panel" />
+            <AppHeader title="Brand Shoot Admin" />
 
             <KeyboardAvoidingView
                 style={{ flex: 1 }}

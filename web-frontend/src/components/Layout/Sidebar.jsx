@@ -29,7 +29,7 @@ const Sidebar = () => {
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <ImageIcon size={28} className="logo-icon" />
-          <span className="logo-text">Flyr Admin</span>
+          <span className="logo-text">Brand Shoot Admin</span>
         </div>
       </div>
 

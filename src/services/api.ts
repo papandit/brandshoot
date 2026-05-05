@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // export const backendURL = 'https://flyr.onewebmart.cloud';
 // export const backendURL = 'https://flyr.backend.merishiksha.com';
-export const backendURL = 'http://72.62.79.188:8001';
+export const backendURL = 'http://72.62.79.188:3000';
 // export const backendURL = 'http://192.168.31.55:5000';
 
 axios.defaults.timeout = 30000;

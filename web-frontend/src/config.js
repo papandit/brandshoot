@@ -1,6 +1,6 @@
 // Backend API Configuration
 // export const API_BASE_URL = 'http://192.168.31.55:5000';
-export const API_BASE_URL = 'http://72.62.79.188:8001';
+export const API_BASE_URL = 'http://72.62.79.188:3000';
 
 
 export const API_ENDPOINTS = {
