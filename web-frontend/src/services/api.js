@@ -62,6 +62,16 @@ export const dashboardAPI = {
     const response = await api.put(API_ENDPOINTS.SETTINGS, settings);
     return response.data;
   },
+  
+  getAppConfig: async () => {
+    const response = await api.get(API_ENDPOINTS.APP_CONFIG);
+    return response.data;
+  },
+  
+  updateAppConfig: async (config) => {
+    const response = await api.put(API_ENDPOINTS.APP_CONFIG, config);
+    return response.data;
+  },
 };
 
 // Users API

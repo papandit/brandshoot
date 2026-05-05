@@ -10,7 +10,11 @@ import {
   ArrowDownCircle, 
   Repeat,
   Activity,
-  Zap
+  Zap,
+  Server,
+  Globe,
+  AlertTriangle,
+  Smartphone
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -48,9 +52,17 @@ const Dashboard = () => {
     usd_to_inr: 91,
     per_image_cost: 10,
   });
+  const [appConfig, setAppConfig] = useState({
+    backend_url: '',
+    app_name: 'Brand Shoot AI',
+    maintenance_mode: false,
+    min_app_version: '1.0.0',
+  });
   const [editSettings, setEditSettings] = useState({});
+  const [editAppConfig, setEditAppConfig] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingAppConfig, setSavingAppConfig] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -58,13 +70,16 @@ const Dashboard = () => {
 
   const loadDashboard = async () => {
     try {
-      const [dashData, settings] = await Promise.all([
+      const [dashData, settings, config] = await Promise.all([
         dashboardAPI.getDashboard(),
         dashboardAPI.getSettings(),
+        dashboardAPI.getAppConfig(),
       ]);
       setStats(dashData);
       setCostSettings(settings);
       setEditSettings(settings);
+      setAppConfig(config);
+      setEditAppConfig(config);
     } catch (error) {
       console.error('Failed to load dashboard:', error);
       toast.error('Failed to load dashboard data');
@@ -83,6 +98,19 @@ const Dashboard = () => {
       toast.error('Failed to update settings');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSaveAppConfig = async () => {
+    setSavingAppConfig(true);
+    try {
+      await dashboardAPI.updateAppConfig(editAppConfig);
+      setAppConfig(editAppConfig);
+      toast.success('App configuration updated successfully!');
+    } catch (error) {
+      toast.error('Failed to update app configuration');
+    } finally {
+      setSavingAppConfig(false);
     }
   };
 
@@ -357,6 +385,80 @@ const Dashboard = () => {
               style={{ marginTop: '16px' }}
             >
               Save Settings
+            </Button>
+          </Card>
+        </motion.div>
+      </section>
+
+      {/* App Configuration */}
+      <section className="dashboard-section">
+        <h2 className="section-title">App Configuration</h2>
+        <motion.div variants={itemVariants}>
+          <Card className="settings-card">
+            <div className="settings-grid">
+              <div className="setting-item" style={{ gridColumn: '1 / -1' }}>
+                <div className="setting-label">
+                  <Server size={16} color="#8B5CF6" />
+                  <span>Backend URL</span>
+                </div>
+                <input
+                  type="text"
+                  className="setting-input"
+                  placeholder="http://your-server-ip:port"
+                  value={editAppConfig.backend_url || ''}
+                  onChange={(e) => setEditAppConfig({ ...editAppConfig, backend_url: e.target.value })}
+                  style={{ width: '100%' }}
+                />
+              </div>
+              <div className="setting-item">
+                <div className="setting-label">
+                  <Globe size={16} color="#10B981" />
+                  <span>App Name</span>
+                </div>
+                <input
+                  type="text"
+                  className="setting-input"
+                  value={editAppConfig.app_name || 'Brand Shoot AI'}
+                  onChange={(e) => setEditAppConfig({ ...editAppConfig, app_name: e.target.value })}
+                />
+              </div>
+              <div className="setting-item">
+                <div className="setting-label">
+                  <Smartphone size={16} color="#F59E0B" />
+                  <span>Min App Version</span>
+                </div>
+                <input
+                  type="text"
+                  className="setting-input"
+                  placeholder="1.0.0"
+                  value={editAppConfig.min_app_version || '1.0.0'}
+                  onChange={(e) => setEditAppConfig({ ...editAppConfig, min_app_version: e.target.value })}
+                />
+              </div>
+              <div className="setting-item">
+                <div className="setting-label">
+                  <AlertTriangle size={16} color="#EF4444" />
+                  <span>Maintenance Mode</span>
+                </div>
+                <label className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={editAppConfig.maintenance_mode || false}
+                    onChange={(e) => setEditAppConfig({ ...editAppConfig, maintenance_mode: e.target.checked })}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <Button
+              variant="primary"
+              fullWidth
+              loading={savingAppConfig}
+              onClick={handleSaveAppConfig}
+              style={{ marginTop: '16px' }}
+            >
+              Save App Configuration
             </Button>
           </Card>
         </motion.div>

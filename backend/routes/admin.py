@@ -390,6 +390,13 @@ DEFAULT_SETTINGS = {
     "per_image_cost": 10,
 }
 
+DEFAULT_APP_CONFIG = {
+    "backend_url": "http://72.62.79.188:3000",
+    "app_name": "Brand Shoot AI",
+    "maintenance_mode": False,
+    "min_app_version": "1.0.0",
+}
+
 
 @admin_bp.route("/settings", methods=["GET"])
 @require_admin
@@ -485,3 +492,56 @@ def add_user_credits(user_id):
         import traceback
         traceback.print_exc()
         return jsonify({"error": "Failed to add credits"}), 500
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+#  APP CONFIG (Backend URL, Maintenance Mode, etc.)
+# ═════════════════════════════════════════════════════════════════════════════
+
+@admin_bp.route("/app-config", methods=["GET"])
+@require_admin
+def get_app_config():
+    """Get app configuration including backend URL. Admin only."""
+    try:
+        doc = admin_settings_col.find_one({"type": "app_config"})
+        if doc:
+            return jsonify({
+                "backend_url": doc.get("backend_url", DEFAULT_APP_CONFIG["backend_url"]),
+                "app_name": doc.get("app_name", DEFAULT_APP_CONFIG["app_name"]),
+                "maintenance_mode": doc.get("maintenance_mode", DEFAULT_APP_CONFIG["maintenance_mode"]),
+                "min_app_version": doc.get("min_app_version", DEFAULT_APP_CONFIG["min_app_version"]),
+            })
+        return jsonify(DEFAULT_APP_CONFIG)
+    except Exception as e:
+        print(f"Admin get app config error: {e}")
+        return jsonify({"error": "Failed to get app config"}), 500
+
+
+@admin_bp.route("/app-config", methods=["PUT"])
+@require_admin
+def update_app_config():
+    """Update app configuration including backend URL. Admin only."""
+    try:
+        data = request.json
+        update = {
+            "type": "app_config",
+            "backend_url": data.get("backend_url", DEFAULT_APP_CONFIG["backend_url"]),
+            "app_name": data.get("app_name", DEFAULT_APP_CONFIG["app_name"]),
+            "maintenance_mode": data.get("maintenance_mode", DEFAULT_APP_CONFIG["maintenance_mode"]),
+            "min_app_version": data.get("min_app_version", DEFAULT_APP_CONFIG["min_app_version"]),
+            "updated_at": datetime.utcnow(),
+        }
+        admin_settings_col.update_one(
+            {"type": "app_config"},
+            {"$set": update},
+            upsert=True
+        )
+        print(f"✓ App config updated: {update}")
+        return jsonify({
+            "success": True, 
+            "message": "App config updated", 
+            **{k: v for k, v in update.items() if k not in ('type', 'updated_at')}
+        })
+    except Exception as e:
+        print(f"Admin update app config error: {e}")
+        return jsonify({"error": "Failed to update app config"}), 500

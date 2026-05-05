@@ -4,7 +4,7 @@ All routes are public (no auth needed) since this is app content data.
 """
 
 from flask import Blueprint, request, jsonify
-from database import categories_col, app_models_col, branding_bg_col, prompt_templates_col
+from database import categories_col, app_models_col, branding_bg_col, prompt_templates_col, admin_settings_col
 
 content_bp = Blueprint("content", __name__)
 
@@ -186,3 +186,35 @@ def get_scenarios(category_id):
                     "prompt_hint": "Place the product naturally with the person in a realistic, well-lit environment."}]
 
     return jsonify(active), 200
+
+
+# ─── App Config (Public) ─────────────────────────────────────────────────────
+
+DEFAULT_APP_CONFIG = {
+    "backend_url": "http://72.62.79.188:3000",
+    "app_name": "Brand Shoot AI",
+    "maintenance_mode": False,
+    "min_app_version": "1.0.0",
+}
+
+@content_bp.route("/app-config", methods=["GET"])
+def get_public_app_config():
+    """
+    Public endpoint to get app configuration.
+    Mobile app calls this on startup to get the current backend URL.
+    No authentication required.
+    """
+    try:
+        doc = admin_settings_col.find_one({"type": "app_config"})
+        if doc:
+            return jsonify({
+                "success": True,
+                "backend_url": doc.get("backend_url", DEFAULT_APP_CONFIG["backend_url"]),
+                "app_name": doc.get("app_name", DEFAULT_APP_CONFIG["app_name"]),
+                "maintenance_mode": doc.get("maintenance_mode", DEFAULT_APP_CONFIG["maintenance_mode"]),
+                "min_app_version": doc.get("min_app_version", DEFAULT_APP_CONFIG["min_app_version"]),
+            })
+        return jsonify({"success": True, **DEFAULT_APP_CONFIG})
+    except Exception as e:
+        print(f"Get public app config error: {e}")
+        return jsonify({"success": True, **DEFAULT_APP_CONFIG})
