@@ -10,6 +10,7 @@ import TokenStats from './pages/TokenStats';
 import Categories from './pages/Categories';
 import Models from './pages/Models';
 import Backgrounds from './pages/Backgrounds';
+import Prompts from './pages/Prompts';
 import Loader from './components/Loader';
 
 // Protected Route Component
@@ -95,6 +96,7 @@ function App() {
             <Route path="/categories" element={<Categories />} />
             <Route path="/models" element={<Models />} />
             <Route path="/backgrounds" element={<Backgrounds />} />
+            <Route path="/prompts" element={<Prompts />} />
           </Route>
 
           {/* Default redirect */}
