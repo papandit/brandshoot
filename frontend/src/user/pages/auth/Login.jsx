@@ -1,6 +1,6 @@
-// Web port of mobile auth/LoginScreen.tsx
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+// Single login page — original "Welcome Back" UI, email/password only.
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
   IoMailOutline,
@@ -9,15 +9,23 @@ import {
   IoEyeOffOutline,
 } from 'react-icons/io5';
 import { useAuth } from '../../context/AuthContext';
-import GoogleSignInButton from '../../components/GoogleSignInButton';
 import './auth.css';
 
 export default function Login() {
-  const { login, googleLogin } = useAuth();
+  const { login, isAuthenticated, isAdmin } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const go = (admin) => navigate(admin ? '/dashboard' : '/', { replace: true });
+
+  // Already signed in? Send them where they belong.
+  useEffect(() => {
+    if (isAuthenticated) go(isAdmin);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, isAdmin]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,20 +34,14 @@ export default function Login() {
       return;
     }
     setLoading(true);
-    try {
-      await login(email.trim(), password);
-    } catch (error) {
-      toast.error(error.message || 'Login Failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const result = await login(email.trim(), password);
+    setLoading(false);
 
-  const handleGoogleToken = async (idToken) => {
-    try {
-      await googleLogin(idToken);
-    } catch (error) {
-      toast.error(error.message || 'Google Sign-In Failed');
+    if (result.success) {
+      toast.success('Welcome back!');
+      go(result.role === 'admin'); // admin -> dashboard, user -> home
+    } else {
+      toast.error(result.error || 'Login failed');
     }
   };
 
@@ -91,14 +93,6 @@ export default function Login() {
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
-
-        <div className="auth-divider">
-          <div className="line" />
-          <span>OR</span>
-          <div className="line" />
-        </div>
-
-        <GoogleSignInButton onIdToken={handleGoogleToken} />
 
         <div className="auth-footer">
           <span>Don't have an account?</span>

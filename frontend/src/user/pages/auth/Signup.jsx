@@ -1,53 +1,49 @@
-// Web port of mobile auth/SignupScreen.tsx
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+// Register page — original "Create Account" UI, email/password only.
+// (Name is required by the backend; phone & Google sign-in removed.)
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
   IoPersonOutline,
   IoMailOutline,
-  IoCallOutline,
   IoLockClosedOutline,
   IoEyeOutline,
   IoEyeOffOutline,
 } from 'react-icons/io5';
 import { useAuth } from '../../context/AuthContext';
-import GoogleSignInButton from '../../components/GoogleSignInButton';
 import './auth.css';
 
 export default function Signup() {
-  const { signup, googleLogin } = useAuth();
+  const { signup, isAuthenticated, isAdmin } = useAuth();
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // New accounts are always users, but honor an existing session too.
+  useEffect(() => {
+    if (isAuthenticated) navigate(isAdmin ? '/dashboard' : '/', { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, isAdmin]);
+
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !phone.trim() || !password) {
+    if (!name.trim() || !email.trim() || !password) {
       toast.error('Please fill in all fields');
       return;
     }
-    if (phone.trim().length < 10) {
-      toast.error('Please enter a valid phone number');
-      return;
-    }
     setLoading(true);
-    try {
-      await signup(name.trim(), email.trim(), phone.trim(), password);
-    } catch (error) {
-      toast.error(error.message || 'Signup Failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+    // signup(name, email, phone, password) — phone left empty (optional on the backend)
+    const result = await signup(name.trim(), email.trim(), '', password);
+    setLoading(false);
 
-  const handleGoogleToken = async (idToken) => {
-    try {
-      await googleLogin(idToken);
-    } catch (error) {
-      toast.error(error.message || 'Google Sign-In Failed');
+    if (result.success) {
+      toast.success('Account created!');
+      navigate('/', { replace: true });
+    } else {
+      toast.error(result.error || 'Signup failed');
     }
   };
 
@@ -89,20 +85,6 @@ export default function Signup() {
           </div>
 
           <div className="input-group">
-            <label className="input-label">Phone Number</label>
-            <div className="input-wrapper">
-              <IoCallOutline />
-              <input
-                type="tel"
-                placeholder="Enter your phone number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                autoComplete="tel"
-              />
-            </div>
-          </div>
-
-          <div className="input-group">
             <label className="input-label">Password</label>
             <div className="input-wrapper">
               <IoLockClosedOutline />
@@ -130,14 +112,6 @@ export default function Signup() {
             {loading ? 'Signing Up...' : 'Sign Up'}
           </button>
         </form>
-
-        <div className="auth-divider">
-          <div className="line" />
-          <span>OR</span>
-          <div className="line" />
-        </div>
-
-        <GoogleSignInButton onIdToken={handleGoogleToken} />
 
         <div className="auth-footer">
           <span>Already have an account?</span>
