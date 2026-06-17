@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  BarChart3, 
-  Grid3x3, 
-  UserCircle, 
+import {
+  LayoutDashboard,
+  Users,
+  BarChart3,
+  Grid3x3,
+  UserCircle,
   Image as ImageIcon,
   Palette,
+  FileText,
   LogOut
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -22,6 +23,7 @@ const Sidebar = () => {
     { path: '/categories', icon: Grid3x3, label: 'Categories' },
     { path: '/models', icon: UserCircle, label: 'Models' },
     { path: '/backgrounds', icon: Palette, label: 'Backgrounds' },
+    { path: '/prompts', icon: FileText, label: 'Prompts' },
   ];
 
   return (

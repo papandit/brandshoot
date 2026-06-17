@@ -49,8 +49,9 @@ def serve_image(filename):
     response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
     response.headers['Expires'] = '31536000'
     
-    # Enable compression hint
-    response.headers['Vary'] = 'Accept-Encoding'
+    # Vary on Origin so browsers don't reuse a cached response without CORS
+    # headers for a CORS fetch() (causes net::ERR_FAILED)
+    response.headers['Vary'] = 'Accept-Encoding, Origin'
     
     return response
 
