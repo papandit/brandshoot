@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import Landing from './Landing';
 
 // Single shared login + register (original UI, email/password only)
 import Login from './user/pages/auth/Login';
@@ -41,6 +42,20 @@ import UserProfile from './user/pages/user/UserProfile';
 import UserHistory from './user/pages/user/UserHistory';
 import BuyMoreImages from './user/pages/user/BuyMoreImages';
 
+// Root "/" gate: signed-out visitors see the public marketing Landing page;
+// authenticated users get the real app Home (so in-app navigate('/') still works).
+function RootEntry() {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="page-loader">
+        <span className="spinner" />
+      </div>
+    );
+  }
+  return isAuthenticated ? <Home /> : <Landing />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -49,6 +64,9 @@ export default function App() {
           {/* One login + register for everyone -> role-based redirect happens inside. */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+
+          {/* Public landing for guests, app Home for signed-in users. */}
+          <Route path="/" element={<RootEntry />} />
 
           {/* ── Admin area: admins only, wrapped in the admin Layout (sidebar). ── */}
           <Route
@@ -76,8 +94,6 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/" element={<Home />} />
-
             <Route path="/photoshoot/models" element={<ModelSelection />} />
             <Route path="/photoshoot/upload" element={<Upload />} />
             <Route path="/photoshoot/result" element={<Result />} />
