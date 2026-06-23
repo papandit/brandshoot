@@ -46,6 +46,27 @@
   height: 36px;
 }
 
+.app-header .header-theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+}
+
+/* Sidebar appearance row */
+.sidebar-drawer .sd-theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  margin-top: 4px;
+}
+.sidebar-drawer .sd-theme-row span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
 /* ───────────────────────── AppButton ───────────────────────── */
 .app-button {
   display: flex;

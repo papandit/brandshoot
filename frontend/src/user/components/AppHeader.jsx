@@ -1,6 +1,7 @@
 // Web port of mobile ui/AppHeader.tsx — back button, centered title, optional right action
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
+import ThemeToggle from '../../ThemeToggle';
 import './components.css';
 
 export default function AppHeader({ title, showBack = true, rightIcon = null, onRightPress }) {
@@ -21,7 +22,7 @@ export default function AppHeader({ title, showBack = true, rightIcon = null, on
           {rightIcon}
         </button>
       ) : (
-        <div className="header-spacer" />
+        <ThemeToggle className="header-theme-toggle" />
       )}
     </header>
   );

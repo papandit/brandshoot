@@ -123,3 +123,19 @@ body {
 .text-error {
   color: var(--color-error);
 }
+
+/* ───────────────────────── Dark theme (admin shell) ─────────────────────────
+   Shared tokens (background/surface/border/text) flip globally via the dark
+   block in user/theme.css. Admin also hardcodes var(--color-white) for many
+   surfaces, so flip it within the admin .layout subtree and keep white text on
+   colored buttons. */
+:root[data-theme="dark"] .layout {
+  background: var(--color-background);
+  --color-white: #1b1f30;
+}
+:root[data-theme="dark"] .layout .btn-primary,
+:root[data-theme="dark"] .layout .btn-danger,
+:root[data-theme="dark"] .layout .page-btn:hover,
+:root[data-theme="dark"] .layout .subtype-btn-active {
+  color: #ffffff;
+}

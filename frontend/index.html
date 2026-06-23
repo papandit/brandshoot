@@ -4,6 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BrandShoot</title>
+    <script>
+      // Apply saved/system theme before paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var q = new URLSearchParams(location.search).get('theme');
+          var saved = null;
+          try { saved = localStorage.getItem('theme'); } catch (e) {}
+          var t = (q === 'light' || q === 'dark')
+            ? q
+            : (saved === 'light' || saved === 'dark')
+              ? saved
+              : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          if (q === 'light' || q === 'dark') { try { localStorage.setItem('theme', q); } catch (e) {} }
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

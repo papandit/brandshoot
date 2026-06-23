@@ -65,6 +65,42 @@
   --font-small-size: 11px;
 }
 
+/* ───────────────────────── Dark theme ─────────────────────────
+   Toggled by setting data-theme="dark" on <html>. Flips the shared
+   design tokens so the whole app (user + admin) themes at once. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-background: #0e0f1a;
+  --color-surface: #171a27;
+  --color-surface-elevated: #20243a;
+
+  --color-primary: #a78bfa;
+  --color-secondary: #9aa3b2;
+
+  --color-accent: #a78bfa;
+  --color-accent-light: rgba(139, 92, 246, 0.18);
+  --color-accent-solid: #7c3aed;
+
+  --color-border: #2a2e42;
+  --color-border-light: #232739;
+  --color-muted: #7c8598;
+
+  --color-black: #eceefb;   /* main text color flips to light */
+  --color-white: #ffffff;   /* stays white for text on accents */
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* Smooth the switch */
+body { transition: background-color 0.3s ease, color 0.3s ease; }
+
+/* Surfaces that hardcode light values in light mode */
+:root[data-theme="dark"] .modal-box { background: var(--color-surface-elevated); }
+:root[data-theme="dark"] .credits-modal .cm-shortage { background: rgba(239, 68, 68, 0.14); }
+
 * {
   margin: 0;
   padding: 0;

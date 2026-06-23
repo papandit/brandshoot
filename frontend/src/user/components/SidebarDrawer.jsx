@@ -11,6 +11,7 @@ import {
 } from 'react-icons/io5';
 import { useAuth } from '../context/AuthContext';
 import { getUserCredits } from '../services/api';
+import ThemeToggle from '../../ThemeToggle';
 import './components.css';
 
 function MenuItem({ icon, label, onClick }) {
@@ -87,6 +88,11 @@ export default function SidebarDrawer({ visible, onClose, onNavigate }) {
         </nav>
 
         <div className="sd-footer">
+          <div className="sd-divider" />
+          <div className="sd-theme-row">
+            <span>Appearance</span>
+            <ThemeToggle />
+          </div>
           <div className="sd-divider" />
           <button className="sd-logout" onClick={logout}>
             <IoLogOutOutline /> Log Out
