@@ -19,6 +19,7 @@ export default function AdsGeneration() {
 
   const [status, setStatus] = useState('generating');
   const [progress, setProgress] = useState(0);
+  const [errorMsg, setErrorMsg] = useState('');
   const startedRef = useRef(false);
 
   useEffect(() => {
@@ -39,6 +40,13 @@ export default function AdsGeneration() {
         }, 1000);
       } catch (e) {
         console.error('Video generation failed:', e);
+        setErrorMsg(
+          e?.response?.data?.error ||
+            (e?.code === 'ECONNABORTED'
+              ? 'The video took too long and the request timed out. Please try again.'
+              : e?.message) ||
+            'Something went wrong. Please try again.'
+        );
         setStatus('error');
       }
     };
@@ -72,7 +80,7 @@ export default function AdsGeneration() {
         {status === 'error' && (
           <>
             <div className="ads-gen-error" style={{ marginBottom: 16 }}>
-              Something went wrong. Please try again.
+              {errorMsg || 'Something went wrong. Please try again.'}
             </div>
             <button className="app-button outline" onClick={() => navigate(-1)}>
               Go Back

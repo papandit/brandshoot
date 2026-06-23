@@ -275,7 +275,7 @@ export async function generateVideo(prompt, category = 'general', aspectRatio = 
     `${API_BASE_URL}/video/generate`,
     { prompt, category, aspectRatio, resolution },
     {
-      timeout: 120000, // video generation takes 30-60s
+      timeout: 300000, // Veo generation + server-side download can take a few minutes
       headers: authHeaders(),
     }
   );

@@ -1,7 +1,10 @@
 from google import genai
 from google.genai import types
 import time
+import os
+import uuid
 from config import config
+from utils.image_utils import UPLOAD_DIR
 
 client = genai.Client(api_key=config.GEMINI_API_KEY)
 
@@ -45,13 +48,21 @@ def generate_video_sync(user_prompt: str, aspect_ratio: str = "9:16", resolution
             # REFRESH the operation object
             operation = client.operations.get(operation) 
             
-        print(operation)
-
-        # 3. Check for results
+        # 3. Download the generated video and serve it from our own /uploads route.
+        #    The raw Veo file URI requires the API key to access, so a browser can't
+        #    play or download it directly. We fetch the bytes here (the key is
+        #    available server-side) and save an .mp4 the frontend can use normally.
         if operation.response:
-            video_uri = operation.response.generated_videos[0].video.uri
-            print(f"Success! URI: {video_uri}")
-            return video_uri
+            generated_video = operation.response.generated_videos[0]
+            client.files.download(file=generated_video.video)
+
+            filename = f"ad_{uuid.uuid4().hex}.mp4"
+            file_path = os.path.join(UPLOAD_DIR, filename)
+            generated_video.video.save(file_path)
+
+            url_path = f"{UPLOAD_DIR}/{filename}"
+            print(f"[Video Generation] Saved video to {url_path}")
+            return url_path
         else:
             raise RuntimeError("Generation failed or was cancelled.")
 
