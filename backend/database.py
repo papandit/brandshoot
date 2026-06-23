@@ -12,4 +12,5 @@ categories_col = db[config.CATEGORIES_COLLECTION]
 app_models_col = db[config.APP_MODELS_COLLECTION]
 branding_bg_col = db[config.BRANDING_BG_COLLECTION]
 prompt_templates_col = db[config.PROMPT_TEMPLATES_COLLECTION]
+api_keys_col = db[config.API_KEYS_COLLECTION]
 

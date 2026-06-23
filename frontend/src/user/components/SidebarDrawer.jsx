@@ -5,6 +5,7 @@ import {
   IoAddCircle,
   IoPersonOutline,
   IoImagesOutline,
+  IoKeyOutline,
   IoLogOutOutline,
   IoChevronForward,
 } from 'react-icons/io5';
@@ -77,6 +78,11 @@ export default function SidebarDrawer({ visible, onClose, onNavigate }) {
             icon={<IoImagesOutline />}
             label="My Creations"
             onClick={() => onNavigate('/history')}
+          />
+          <MenuItem
+            icon={<IoKeyOutline />}
+            label="Developer API"
+            onClick={() => onNavigate('/api-keys')}
           />
         </nav>
 

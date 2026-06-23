@@ -198,6 +198,47 @@ export async function getAppSettings() {
   return res.data; // { success, per_image_cost }
 }
 
+// ─── Developer API Keys (api_keys routes) ────────────────────────────────────
+
+export async function fetchApiPlans() {
+  const res = await axios.get(`${API_BASE_URL}/api-keys/plans`, {
+    headers: authHeaders(),
+  });
+  return res.data; // { success, plans }
+}
+
+export async function listApiKeys() {
+  const res = await axios.get(`${API_BASE_URL}/api-keys`, {
+    headers: authHeaders(),
+  });
+  return res.data; // { success, keys }
+}
+
+export async function createApiKey(name, plan) {
+  const res = await axios.post(
+    `${API_BASE_URL}/api-keys`,
+    { name, plan },
+    { headers: authHeaders() }
+  );
+  return res.data; // { success, key: { ...fields, secret } }  <- secret shown once
+}
+
+export async function rotateApiKey(keyId) {
+  const res = await axios.post(
+    `${API_BASE_URL}/api-keys/${keyId}/rotate`,
+    {},
+    { headers: authHeaders() }
+  );
+  return res.data; // { success, key: { ...fields, secret } }
+}
+
+export async function revokeApiKey(keyId) {
+  const res = await axios.delete(`${API_BASE_URL}/api-keys/${keyId}`, {
+    headers: authHeaders(),
+  });
+  return res.data; // { success, message }
+}
+
 // ─── Credits & Purchases (api.ts / purchase routes) ─────────────────────────
 
 export async function getUserCredits() {
