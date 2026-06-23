@@ -1,3 +1,16 @@
+import sys
+
+# Windows stdout/stderr default to the cp1252 codec, which can't encode the
+# ✓ / ✗ / emoji characters used throughout the app's debug print() calls. That
+# raises UnicodeEncodeError mid-request and surfaces as a 500 (e.g. signup/login
+# "failing"). Force UTF-8 so a log line can never crash a request.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        try:
+            _stream.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
 from flask import Flask, send_from_directory, make_response
 from flask_cors import CORS
 from flask_compress import Compress
@@ -9,6 +22,8 @@ from routes.admin_content import admin_content_bp
 from routes.user import user_bp
 from routes.content import content_bp
 from routes.purchase import purchase_bp
+from routes.api_keys import api_keys_bp
+from routes.public_api import public_api_bp
 import os
 
 app = Flask(__name__)
@@ -39,6 +54,8 @@ app.register_blueprint(user_bp, url_prefix="/user")
 app.register_blueprint(content_bp, url_prefix="/content")
 app.register_blueprint(admin_content_bp, url_prefix="/admin/content")
 app.register_blueprint(purchase_bp, url_prefix="/purchase")
+app.register_blueprint(api_keys_bp, url_prefix="/api-keys")
+app.register_blueprint(public_api_bp, url_prefix="/api/v1")
 
 @app.route("/uploads/<path:filename>")
 def serve_image(filename):

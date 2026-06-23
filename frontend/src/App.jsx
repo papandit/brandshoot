@@ -41,6 +41,7 @@ import AdsResult from './user/pages/ads/AdsResult';
 import UserProfile from './user/pages/user/UserProfile';
 import UserHistory from './user/pages/user/UserHistory';
 import BuyMoreImages from './user/pages/user/BuyMoreImages';
+import ApiKeys from './user/pages/user/ApiKeys';
 
 // Root "/" gate: signed-out visitors see the public marketing Landing page;
 // authenticated users get the real app Home (so in-app navigate('/') still works).
@@ -118,6 +119,7 @@ export default function App() {
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/history" element={<UserHistory />} />
             <Route path="/buy-credits" element={<BuyMoreImages />} />
+            <Route path="/api-keys" element={<ApiKeys />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
