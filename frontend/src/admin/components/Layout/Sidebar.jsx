@@ -14,7 +14,9 @@ import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
 const Sidebar = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const adminName = user?.name || 'Admin';
+  const adminInitial = adminName.charAt(0).toUpperCase();
 
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -49,6 +51,13 @@ const Sidebar = () => {
       </nav>
 
       <div className="sidebar-footer">
+        <div className="sb-user">
+          <div className="sb-user-avatar">{adminInitial}</div>
+          <div className="sb-user-meta">
+            <span className="sb-user-name">{adminName}</span>
+            <span className="sb-user-role">Administrator</span>
+          </div>
+        </div>
         <button className="logout-btn" onClick={logout}>
           <LogOut size={20} className="nav-icon" />
           <span className="nav-label">Logout</span>

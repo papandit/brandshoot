@@ -10,6 +10,30 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  transition: margin-left 0.25s ease;
+}
+
+/* Collapsed sidebar (toggled from the header hamburger) */
+.layout.sidebar-collapsed .sidebar {
+  width: 76px;
+}
+.layout.sidebar-collapsed .main-container {
+  margin-left: 76px;
+}
+.layout.sidebar-collapsed .logo-text,
+.layout.sidebar-collapsed .nav-label,
+.layout.sidebar-collapsed .sb-user-meta {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.layout.sidebar-collapsed .sidebar-logo,
+.layout.sidebar-collapsed .nav-item,
+.layout.sidebar-collapsed .logout-btn,
+.layout.sidebar-collapsed .sb-user {
+  justify-content: center;
 }
 
 .main-content {
