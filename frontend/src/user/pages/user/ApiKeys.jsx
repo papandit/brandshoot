@@ -14,7 +14,6 @@ import {
 } from 'react-icons/io5';
 import AppHeader from '../../components/AppHeader';
 import {
-  fetchApiPlans,
   listApiKeys,
   createApiKey,
   rotateApiKey,
@@ -52,10 +51,8 @@ function CodeBlock({ code }) {
 
 export default function ApiKeys() {
   const [keys, setKeys] = useState([]);
-  const [plans, setPlans] = useState({});
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
-  const [plan, setPlan] = useState('free');
   const [creating, setCreating] = useState(false);
   const [newSecret, setNewSecret] = useState(null); // one-time secret to reveal
 
@@ -65,16 +62,7 @@ export default function ApiKeys() {
       .catch(() => toast.error('Failed to load API keys'));
 
   useEffect(() => {
-    Promise.all([
-      loadKeys(),
-      fetchApiPlans()
-        .then((res) => {
-          setPlans(res.plans || {});
-          const first = Object.keys(res.plans || {})[0];
-          if (first) setPlan(first);
-        })
-        .catch(() => {}),
-    ]).finally(() => setLoading(false));
+    loadKeys().finally(() => setLoading(false));
   }, []);
 
   const copy = async (text) => {
@@ -93,7 +81,7 @@ export default function ApiKeys() {
     }
     setCreating(true);
     try {
-      const res = await createApiKey(name.trim(), plan);
+      const res = await createApiKey(name.trim());
       setNewSecret(res.key.secret);
       setName('');
       await loadKeys();
@@ -149,8 +137,8 @@ export default function ApiKeys() {
           <p className="api-intro">
             Generate a key to integrate BrandShoot into your e-commerce site or app —
             <b> Try-On</b>, <b>Model Photoshoot</b> and <b>Catalog</b> creation. Send the key in the{' '}
-            <code>X-API-Key</code> header. Usage draws from your credit balance and is limited by the
-            key's plan. Call the API from your own backend so the key stays secret.
+            <code>X-API-Key</code> header. Usage draws from your credit balance. Call the API from
+            your own backend so the key stays secret.
           </p>
         </div>
 
@@ -186,17 +174,8 @@ export default function ApiKeys() {
               placeholder="e.g. My Store (production)"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !creating && handleCreate()}
             />
-          </div>
-          <div className="form-field">
-            <label>Plan</label>
-            <select value={plan} onChange={(e) => setPlan(e.target.value)}>
-              {Object.entries(plans).map(([key, limits]) => (
-                <option key={key} value={key}>
-                  {key} — {limits.rate_limit_per_min}/min, {limits.monthly_quota.toLocaleString()} images/mo
-                </option>
-              ))}
-            </select>
           </div>
           <button className="app-button primary" disabled={creating} onClick={handleCreate}>
             <IoAddCircleOutline /> {creating ? 'Generating...' : 'Generate API Key'}
@@ -223,7 +202,6 @@ export default function ApiKeys() {
               </div>
               <div className="akc-prefix">{k.key_prefix}…</div>
               <div className="akc-meta">
-                <span>Plan: <b>{k.plan}</b></span>
                 <span>Usage: <b>{k.usage_this_period}</b> / {k.monthly_quota.toLocaleString()}</span>
                 <span>Rate: <b>{k.rate_limit_per_min}/min</b></span>
                 <span>Last used: <b>{formatDate(k.last_used_at)}</b></span>

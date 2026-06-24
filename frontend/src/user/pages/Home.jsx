@@ -58,7 +58,7 @@ export default function Home() {
     <div className="page-flow">
       {/* Home header */}
       <header className="home-header">
-        <h1 className="home-hero">Discover</h1>
+        <h1 className="home-hero">BrandShoot</h1>
         <div className="home-header-actions">
           <button className="home-icon-btn accent" onClick={() => navigate('/ads')} aria-label="Video Ads">
             <IoVideocamOutline />
