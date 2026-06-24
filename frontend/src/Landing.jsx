@@ -93,8 +93,8 @@ const STEPS = [
 
 const STATS = [
   { num: 6, suffix: '', label: 'Creative tools in one studio' },
-  { num: 10, suffix: 's', label: 'Average render time' },
-  { num: 4, suffix: 'K', label: 'Export-ready quality' },
+  { text: '30-40s', label: 'Average render time' },
+  { text: 'HD', label: 'Export-ready quality' },
   { text: '∞', label: 'Style variations' },
 ];
 
@@ -277,7 +277,7 @@ export default function Landing() {
             <ul className="hero-points">
               <li><IoCheckmarkCircle /> No studio needed</li>
               <li><IoCheckmarkCircle /> Ready in seconds</li>
-              <li><IoCheckmarkCircle /> 4K-ready exports</li>
+              <li><IoCheckmarkCircle /> HD-ready exports</li>
             </ul>
           </motion.div>
 
