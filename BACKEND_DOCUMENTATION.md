@@ -1576,9 +1576,9 @@ db.transactions.createIndex({ "status": 1 })
 ### Environment Variables (`.env`)
 
 ```bash
-# MongoDB
-MONGO_URL=mongodb://localhost:27017/
-DB_NAME=flyr_db
+# MongoDB (external main server — put real credentials in your git-ignored .env)
+MONGO_URL=mongodb://<user>:<password>@72.62.79.188:27017/?authSource=admin
+DB_NAME=flyr_clone
 
 # Server
 EXPO_PUBLIC_IP_ADDRESS=192.168.1.100

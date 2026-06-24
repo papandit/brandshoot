@@ -139,8 +139,8 @@ Your backend requires:
 GOOGLE_APPLICATION_CREDENTIALS=c:\Users\Harsh\Downloads\flyr-service-account.json
 ANDROID_PACKAGE_NAME=com.anonymous.flyrclone
 
-# MongoDB (if not already set)
-MONGO_URI=mongodb://localhost:27017/flyr_db
+# MongoDB (external main server — put real credentials in your git-ignored .env)
+MONGO_URL=mongodb://<user>:<password>@72.62.79.188:27017/?authSource=admin
 
 # Other existing variables...
 ```
