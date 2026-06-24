@@ -54,7 +54,11 @@ app.register_blueprint(user_bp, url_prefix="/user")
 app.register_blueprint(content_bp, url_prefix="/content")
 app.register_blueprint(admin_content_bp, url_prefix="/admin/content")
 app.register_blueprint(purchase_bp, url_prefix="/purchase")
-app.register_blueprint(api_keys_bp, url_prefix="/api-keys")
+# Mounted under /user/api-keys (not /api-keys) so it doesn't collide with the
+# SPA's /api-keys page route. The front-of-app proxy serves /api-keys as the
+# static dashboard, while /user/* is forwarded to Flask — so the management API
+# must live beneath an already-proxied prefix.
+app.register_blueprint(api_keys_bp, url_prefix="/user/api-keys")
 app.register_blueprint(public_api_bp, url_prefix="/api/v1")
 
 @app.route("/uploads/<path:filename>")

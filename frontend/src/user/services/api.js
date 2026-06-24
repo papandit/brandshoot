@@ -200,15 +200,18 @@ export async function getAppSettings() {
 
 // ─── Developer API Keys (api_keys routes) ────────────────────────────────────
 
+// NOTE: the management API lives under /user/api-keys (NOT /api-keys). The latter
+// is the SPA's dashboard page route, which the production proxy serves as static
+// HTML; /user/* is forwarded to Flask, so the API must sit beneath it.
 export async function fetchApiPlans() {
-  const res = await axios.get(`${API_BASE_URL}/api-keys/plans`, {
+  const res = await axios.get(`${API_BASE_URL}/user/api-keys/plans`, {
     headers: authHeaders(),
   });
   return res.data; // { success, plans }
 }
 
 export async function listApiKeys() {
-  const res = await axios.get(`${API_BASE_URL}/api-keys`, {
+  const res = await axios.get(`${API_BASE_URL}/user/api-keys`, {
     headers: authHeaders(),
   });
   return res.data; // { success, keys }
@@ -216,7 +219,7 @@ export async function listApiKeys() {
 
 export async function createApiKey(name, plan) {
   const res = await axios.post(
-    `${API_BASE_URL}/api-keys`,
+    `${API_BASE_URL}/user/api-keys`,
     { name, plan },
     { headers: authHeaders() }
   );
@@ -225,7 +228,7 @@ export async function createApiKey(name, plan) {
 
 export async function rotateApiKey(keyId) {
   const res = await axios.post(
-    `${API_BASE_URL}/api-keys/${keyId}/rotate`,
+    `${API_BASE_URL}/user/api-keys/${keyId}/rotate`,
     {},
     { headers: authHeaders() }
   );
@@ -233,7 +236,7 @@ export async function rotateApiKey(keyId) {
 }
 
 export async function revokeApiKey(keyId) {
-  const res = await axios.delete(`${API_BASE_URL}/api-keys/${keyId}`, {
+  const res = await axios.delete(`${API_BASE_URL}/user/api-keys/${keyId}`, {
     headers: authHeaders(),
   });
   return res.data; // { success, message }
