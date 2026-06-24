@@ -38,6 +38,49 @@ export async function downloadImage(uri, filename) {
   URL.revokeObjectURL(url);
 }
 
+/**
+ * Share a single image. Tries, in order:
+ *   1. Native file share (Web Share API with files) — best on mobile.
+ *   2. Native link share (Web Share API with url).
+ *   3. Copy the link to the clipboard.
+ * Returns 'shared' | 'copied' | 'cancelled'.
+ */
+export async function shareImage(uri, filename) {
+  const fullUrl = getFullUrl(uri);
+
+  // 1. Try sharing the actual image file (richest experience).
+  try {
+    if (typeof navigator !== 'undefined' && navigator.canShare) {
+      const response = await fetch(fullUrl, { cache: 'no-store' });
+      const blob = await response.blob();
+      const file = new File([blob], filename || `creation_${Date.now()}.png`, {
+        type: blob.type || 'image/png',
+      });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'My BrandShoot creation' });
+        return 'shared';
+      }
+    }
+  } catch (e) {
+    if (e?.name === 'AbortError') return 'cancelled';
+    // fall through to link-based sharing
+  }
+
+  // 2. Share just the link, or 3. copy it.
+  try {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      await navigator.share({ title: 'My BrandShoot creation', url: fullUrl });
+      return 'shared';
+    }
+  } catch (e) {
+    if (e?.name === 'AbortError') return 'cancelled';
+    // fall through to clipboard
+  }
+
+  await navigator.clipboard.writeText(fullUrl);
+  return 'copied';
+}
+
 /** Download multiple images sequentially, reporting progress */
 export async function downloadMultipleImages(imageData, onProgress) {
   let completed = 0;

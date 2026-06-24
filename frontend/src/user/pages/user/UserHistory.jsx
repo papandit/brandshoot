@@ -1,10 +1,10 @@
 // Web port of mobile UserHistoryScreen.tsx — "My Creations" with category filters
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { IoImagesOutline, IoDownloadOutline, IoOpenOutline, IoClose } from 'react-icons/io5';
+import { IoImagesOutline, IoDownloadOutline, IoShareSocialOutline, IoClose } from 'react-icons/io5';
 import AppHeader from '../../components/AppHeader';
 import { fetchMyGenerations } from '../../services/api';
-import { downloadImage } from '../../utils/imageUtils';
+import { downloadImage, shareImage } from '../../utils/imageUtils';
 import { getFullUrl } from '../../config';
 import '../pages.css';
 import './user.css';
@@ -22,6 +22,24 @@ export default function UserHistory() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [viewerUrl, setViewerUrl] = useState(null);
+
+  const handleDownload = async (url, filename) => {
+    try {
+      await downloadImage(url, filename);
+      toast.success('Image downloaded');
+    } catch {
+      toast.error('Download failed');
+    }
+  };
+
+  const handleShare = async (url, filename) => {
+    try {
+      const result = await shareImage(url, filename);
+      if (result === 'copied') toast.success('Link copied to clipboard');
+    } catch {
+      toast.error('Could not share image');
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -79,6 +97,7 @@ export default function UserHistory() {
               <div className="gen-thumbs">
                 {(gen.result_urls || []).map((url, i) => {
                   const fullUrl = getFullUrl(url);
+                  const filename = `creation_${gen.id}_${i + 1}.png`;
                   return (
                     <div key={i} className="gen-thumb">
                       <img
@@ -87,15 +106,31 @@ export default function UserHistory() {
                         loading="lazy"
                         onClick={() => setViewerUrl(fullUrl)}
                       />
+                      <button
+                        className="gen-thumb-expand"
+                        onClick={() => setViewerUrl(fullUrl)}
+                        aria-label="View full image"
+                      >
+                        <IoImagesOutline />
+                      </button>
                       <div className="gen-thumb-actions">
                         <button
-                          onClick={() => downloadImage(fullUrl, `creation_${gen.id}_${i + 1}.png`)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(fullUrl, filename);
+                          }}
                           aria-label="Download"
                         >
                           <IoDownloadOutline />
                         </button>
-                        <button onClick={() => window.open(fullUrl, '_blank')} aria-label="Open">
-                          <IoOpenOutline />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleShare(fullUrl, filename);
+                          }}
+                          aria-label="Share"
+                        >
+                          <IoShareSocialOutline />
                         </button>
                       </div>
                     </div>
@@ -114,14 +149,14 @@ export default function UserHistory() {
             <IoClose />
           </button>
           <img src={viewerUrl} alt="Creation" onClick={(e) => e.stopPropagation()} />
-          <div className="viewer-actions">
-            <button onClick={() => downloadImage(viewerUrl, 'creation.png')}>
+          <div className="viewer-actions" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => handleDownload(viewerUrl, 'creation.png')}>
               <IoDownloadOutline />
               Download
             </button>
-            <button onClick={() => window.open(viewerUrl, '_blank')}>
-              <IoOpenOutline />
-              Open
+            <button onClick={() => handleShare(viewerUrl, 'creation.png')}>
+              <IoShareSocialOutline />
+              Share
             </button>
           </div>
         </div>

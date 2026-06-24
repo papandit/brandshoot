@@ -296,9 +296,9 @@ export default function Landing() {
                   <span className="panel-live"><span className="pulse" /> generating</span>
                 </div>
                 <div className="panel-grid">
-                  {['g1', 'g2', 'g3', 'g4', 'g5', 'g6'].map((g, i) => (
+                  {['g1.jpg', 'g3.jpg', 'g4.jpg', 'g5.jpg', 'g6.jpg', 'g7.png'].map((g, i) => (
                     <div className={`thumb thumb-${i % 3}`} key={g}>
-                      <img src={`/landing/${g}.jpg`} alt="BrandShoot AI generated result" loading="lazy" />
+                      <img src={`/landing/${g}`} alt="BrandShoot AI generated result" loading="lazy" />
                       {i === 4 && <span className="thumb-shimmer" />}
                     </div>
                   ))}

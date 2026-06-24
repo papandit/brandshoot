@@ -200,42 +200,98 @@
 }
 
 .gen-thumbs {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
 }
 
 .gen-thumb {
-  flex-shrink: 0;
-  text-align: center;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
 }
 
 .gen-thumb img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
-  border-radius: 12px;
-  background: var(--color-surface-elevated);
-  cursor: pointer;
+  display: block;
+  cursor: zoom-in;
+  transition: transform 0.25s ease;
+}
+
+.gen-thumb:hover img {
+  transform: scale(1.04);
+}
+
+/* Subtle gradient so the overlay buttons stay legible over any image */
+.gen-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.45) 0%, transparent 38%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.gen-thumb:hover::after {
+  opacity: 1;
+}
+
+/* "View full" affordance, top-right */
+.gen-thumb-expand {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.gen-thumb:hover .gen-thumb-expand {
+  opacity: 1;
 }
 
 .gen-thumb-actions {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  left: 8px;
   display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 4px;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .gen-thumb-actions button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 12px;
-  background: var(--color-accent-light);
-  color: var(--color-accent);
-  font-size: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 16px;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.gen-thumb-actions button:hover {
+  background: var(--color-accent);
+  transform: translateY(-1px);
 }
 
 /* Image viewer modal */
