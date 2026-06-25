@@ -1,6 +1,7 @@
 // Developer API key management — create / list / rotate / revoke keys that let
 // external sites integrate BrandShoot's Try-On, Photoshoot and Catalog features.
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
   IoKeyOutline,
@@ -11,6 +12,7 @@ import {
   IoTrashOutline,
   IoAddCircleOutline,
   IoCodeSlashOutline,
+  IoArrowForwardOutline,
 } from 'react-icons/io5';
 import AppHeader from '../../components/AppHeader';
 import {
@@ -19,7 +21,6 @@ import {
   rotateApiKey,
   revokeApiKey,
 } from '../../services/api';
-import { API_BASE_URL } from '../../config';
 import '../pages.css';
 import './user.css';
 
@@ -27,26 +28,6 @@ function formatDate(dateStr) {
   if (!dateStr) return 'Never';
   const d = new Date(dateStr);
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-// Copy-able code snippet block used in the integration guide.
-function CodeBlock({ code }) {
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      toast.success('Copied to clipboard');
-    } catch {
-      toast.error('Copy failed — select and copy manually');
-    }
-  };
-  return (
-    <div className="code-block">
-      <button className="cb-copy" onClick={copy}>
-        <IoCopyOutline /> Copy
-      </button>
-      <pre>{code}</pre>
-    </div>
-  );
 }
 
 export default function ApiKeys() {
@@ -220,101 +201,20 @@ export default function ApiKeys() {
           ))}
         </div>
 
-        {/* How others can use this — integration guide */}
-        <div className="details-card">
-          <h3>
-            <IoCodeSlashOutline style={{ verticalAlign: '-3px', marginRight: 6 }} />
-            How others integrate BrandShoot
-          </h3>
-          <p className="api-intro" style={{ marginBottom: 16 }}>
-            Share this with the developer adding BrandShoot to a store or app. They use your key to
-            offer three features to their shoppers — <b>Try-On</b>, <b>Model Photoshoot</b> and{' '}
-            <b>Catalog</b>. Images are sent as base64 and generation is asynchronous: each call
-            returns a <code>jobId</code> you poll until it's done.
-          </p>
-
-          <div className="api-step">
-            <h4>1. Authenticate</h4>
-            <p>Send the API key in the <code>X-API-Key</code> header on every request.</p>
-            <CodeBlock code={`X-API-Key: <your-api-key>`} />
+        {/* Integration guide lives on its own page now */}
+        <Link to="/api-docs" className="details-card doc-cta">
+          <div className="doc-cta-icon">
+            <IoCodeSlashOutline />
           </div>
-
-          <div className="api-step">
-            <h4>2. Available endpoints</h4>
-            <div className="endpoint-row">
-              <span className="http-method">POST</span>
-              <code>/api/v1/tryon</code>
-              <span className="ep-desc">Shopper photo + product → try-on</span>
-            </div>
-            <div className="endpoint-row">
-              <span className="http-method">POST</span>
-              <code>/api/v1/photoshoot</code>
-              <span className="ep-desc">Product + model → multiple poses</span>
-            </div>
-            <div className="endpoint-row">
-              <span className="http-method">POST</span>
-              <code>/api/v1/catalog</code>
-              <span className="ep-desc">Product + models → catalogue</span>
-            </div>
-            <div className="endpoint-row">
-              <span className="http-method">GET</span>
-              <code>{'/api/v1/jobs/{jobId}'}</code>
-              <span className="ep-desc">Poll for status + result images</span>
-            </div>
+          <div className="doc-cta-text">
+            <h3>How to use your key in other software</h3>
+            <p className="api-intro">
+              Step-by-step integration guide — endpoints, the job flow, and ready-to-copy
+              cURL / Node / Python examples.
+            </p>
           </div>
-
-          <div className="api-step">
-            <h4>3. Start a Try-On (example)</h4>
-            <p>Returns a <code>jobId</code> immediately and deducts 1 credit from your balance.</p>
-            <CodeBlock
-              code={`curl -X POST ${API_BASE_URL}/api/v1/tryon \\
-  -H "X-API-Key: <your-api-key>" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "categoryId": "fashion",
-    "productImage": "<base64 product image>",
-    "userImage": "<base64 of the shopper photo>"
-  }'
-
-# → { "jobId": "abc12345", "feature": "tryon", "totalImages": 1 }`}
-            />
-          </div>
-
-          <div className="api-step">
-            <h4>4. Poll for the result</h4>
-            <p>Keep polling until <code>status</code> is <code>done</code>, then read <code>images[]</code>.</p>
-            <CodeBlock
-              code={`curl ${API_BASE_URL}/api/v1/jobs/abc12345 \\
-  -H "X-API-Key: <your-api-key>"
-
-# → { "status": "done", "images": [ { "imageUrl": "uploads/....jpg" } ] }`}
-            />
-          </div>
-
-          <div className="api-step">
-            <h4>From your server (JavaScript)</h4>
-            <CodeBlock
-              code={`const r = await fetch("${API_BASE_URL}/api/v1/tryon", {
-  method: "POST",
-  headers: {
-    "X-API-Key": process.env.BRANDSHOOT_KEY,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({ categoryId, productImage, userImage }),
-});
-const { jobId } = await r.json();`}
-            />
-          </div>
-
-          <div className="security-note">
-            <IoWarningOutline />
-            <span>
-              Call the API from your own backend so the key stays secret — never expose it in a
-              shopper's browser. Each generated image is billed to your credit balance and counts
-              toward this key's monthly quota.
-            </span>
-          </div>
-        </div>
+          <IoArrowForwardOutline className="doc-cta-arrow" />
+        </Link>
       </div>
     </div>
   );

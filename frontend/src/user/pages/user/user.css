@@ -745,3 +745,112 @@
   font-size: 18px;
   margin-top: 1px;
 }
+
+/* ── Integration-guide CTA card (on the API Keys page) ───────────────── */
+.doc-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.doc-cta:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.doc-cta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  font-size: 22px;
+}
+
+.doc-cta-text { flex: 1; min-width: 0; }
+.doc-cta-text h3 { margin: 0 0 4px; }
+.doc-cta-text .api-intro { margin: 0; }
+
+.doc-cta-arrow {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: var(--color-accent);
+}
+
+/* ── API docs page bits ──────────────────────────────────────────────── */
+.doc-back,
+.doc-inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.doc-back { margin-bottom: 12px; }
+.doc-back:hover,
+.doc-inline-link:hover { text-decoration: underline; }
+
+.doc-md-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 9px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-elevated);
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.doc-md-link:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.doc-md-link svg { font-size: 17px; }
+
+.doc-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: var(--color-secondary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.doc-list li { margin-bottom: 4px; }
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.doc-table th,
+.doc-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-secondary);
+}
+
+.doc-table th {
+  color: var(--color-muted);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.doc-table tr:last-child td { border-bottom: none; }
+.doc-table code { font-size: 12px; }
